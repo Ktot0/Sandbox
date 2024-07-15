@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Configuration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 50%;
+            margin: auto;
+            overflow: hidden;
+        }
+        form {
+            background: #fff;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        form label {
+            display: block;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        form input[type="text"], form input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        form button {
+            display: inline-block;
+            padding: 10px 20px;
+            border: none;
+            background-color: #333;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        form button:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Configuration</h2>
+        <form action="{{ url_for('configure') }}" method="post">
+            <label for="vm_label">VM Label</label>
+            <input type="text" id="vm_label" name="vm_label" required>
+            
+            <label for="snapshot">Snapshot</label>
+            <input type="text" id="snapshot" name="snapshot" required>
+            
+            <label for="vm_default_path">VM Default Path</label>
+            <input type="text" id="vm_default_path" name="vm_default_path" required>
+
+            <label for="vboxmanage_path">VBoxManage Path</label>
+            <input type="text" id="vboxmanage_path" name="vboxmanage_path" required>
+            
+            <label for="virustotal_api_key">Virustotal API Key</label>
+            <input type="text" id="virustotal_api_key" name="virustotal_api_key" required>
+
+            <button type="submit">Save Configuration</button>
+        </form>
+    </div>
+</body>
+</html>
