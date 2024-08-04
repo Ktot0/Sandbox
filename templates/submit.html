@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% block title %}Submit{% endblock %}
+
 {% block content %}
 <h1>Upload and Execute Modules</h1>
 <form id="upload-form" action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data">
@@ -10,8 +12,7 @@
             <p>Drag and drop a file here or click to select</p>
         </div>
     </div>
-    
-    <br>
+
     <label>Select modules:</label>
     <div class="button-group">
         {% for module in modules %}
@@ -21,8 +22,7 @@
         </div>
         {% endfor %}
     </div>
-    <br>
-    <br>
+
     <label>Select post-execution modules:</label>
     <div class="button-group">
         {% for module in post_modules %}
@@ -32,7 +32,7 @@
         </div>
         {% endfor %}
     </div>
-    <br>
+
     <button type="submit">Upload</button>
 </form>
 
@@ -40,18 +40,17 @@
 document.addEventListener('DOMContentLoaded', (event) => {
     const dropArea = document.getElementById('drop-area');
     const fileInput = document.getElementById('file');
-    const uploadForm = document.getElementById('upload-form');
 
     ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-        dropArea.addEventListener(eventName, preventDefaults, false)
+        dropArea.addEventListener(eventName, preventDefaults, false);
     });
 
     ['dragenter', 'dragover'].forEach(eventName => {
-        dropArea.addEventListener(eventName, highlight, false)
+        dropArea.addEventListener(eventName, highlight, false);
     });
 
     ['dragleave', 'drop'].forEach(eventName => {
-        dropArea.addEventListener(eventName, unhighlight, false)
+        dropArea.addEventListener(eventName, unhighlight, false);
     });
 
     dropArea.addEventListener('drop', handleDrop, false);

@@ -22,6 +22,6 @@ time.sleep(10)
 
 response = requests.get(url+id_value, headers=headers)
 
-with open(f'{file_path}core_virustotal-report.json', 'w') as f:
+with open(f'{file_path}virustotal-report.json', 'w') as f:
     f.write(response.text)
     f.close()

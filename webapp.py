@@ -136,27 +136,45 @@ def humansize(nbytes):
 
 @app.route('/reports/<report_name>')
 def report(report_name):
-    report_file = os.path.join('reports', report_name, 'core_virustotal-report.json')
+    report_file = os.path.join('reports', report_name, 'core_summary-report.json')
     with open(report_file) as f:
         report_data = json.load(f)
     
-    file_name = report_data['data']['attributes']['meaningful_name']
-    size = humansize(int(report_data['data']['attributes']['size']))
-    sha256 = report_data['data']['attributes']['sha256']
-    filetype = report_data['data']['attributes']['magic']
-    md5 = report_data['data']['attributes']['md5']
-    sha1 = report_data['data']['attributes']['sha1']
+    file_name = report_data['meaningful_name']
+    size = humansize(int(report_data['size']))
+    sha256 = report_data['sha256']
+    filetype = report_data['filetype']
+    md5 = report_data['md5']
+    sha1 = report_data['sha1']
     execution_date = report_name.split('-')[1]
     execution_time = report_name.split('-')[2]
+    ascii_strings = report_data['ascii_strings']
+    unicode_strings = report_data['unicode_strings']
+    pe_info = report_data.get('pe_info', {})
 
-    return render_template('report.html', file_name=file_name, meaningful_name=file_name, size=size, sha256=sha256, filetype=filetype, md5=md5, sha1=sha1, execution_date=execution_date, execution_time=execution_time, report_name=report_name)
+    return render_template(
+        'report.html',
+        file_name=file_name,
+        meaningful_name=file_name,
+        size=size,
+        sha256=sha256,
+        filetype=filetype,
+        md5=md5,
+        sha1=sha1,
+        execution_date=execution_date,
+        execution_time=execution_time,
+        ascii_strings=ascii_strings,
+        unicode_strings=unicode_strings,
+        pe_info=pe_info,
+        report_name=report_name
+    )
 
 @app.route('/reports/<report_name>/files', methods=['GET'])
 def list_report_files(report_name):
     report_path = os.path.join(REPORT_FOLDER, report_name)
     if not os.path.exists(report_path):
         return jsonify({'error': 'Report not found'}), 404
-    
+
     files = [f for f in os.listdir(report_path) if f.endswith('.json')]
     return jsonify({'files': files})
 
@@ -166,19 +184,15 @@ def get_report_file(report_name, file_name):
     if not os.path.exists(report_path):
         return jsonify({'error': 'File not found'}), 404
 
-    module_name = file_name.split('-')[0]  # Extract the module name
-    
-    html_template = f'{module_name}.html'  # Determine the HTML template
+    template_name = file_name.split(".")[0] + '.html'
 
-    # Check if the template exists
-    if not os.path.exists(os.path.join(app.template_folder, html_template)):
+    if not os.path.exists(os.path.join(app.template_folder, template_name)):
         return jsonify({'error': 'Template not found'}), 404
 
     with open(report_path, 'r') as file:
         json_content = json.load(file)
 
-    # Pass the JSON content to the template
-    return render_template(html_template, json_content=json_content, report_name=report_name, file_name=file_name)
+    return render_template(template_name, json_content=json_content, report_name=report_name, file_name=file_name)
 
 @app.route('/status', methods=['GET'])
 def get_status():
@@ -191,3 +205,4 @@ def report_status():
 
 if __name__ == '__main__':
     socketio.run(app, debug=True)
+    #app.run(host='0.0.0.0', port=5000)

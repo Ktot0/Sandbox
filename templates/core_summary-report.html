@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Core Summary Report</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h1>Core Summary Report</h1>
+    <p><strong>File Name:</strong> {{ file_name }}</p>
+    <p><strong>Size:</strong> {{ size }}</p>
+    <p><strong>SHA256:</strong> {{ sha256 }}</p>
+    <p><strong>File Type:</strong> {{ filetype }}</p>
+    <p><strong>MD5:</strong> {{ md5 }}</p>
+    <p><strong>SHA1:</strong> {{ sha1 }}</p>
+    <p><strong>Execution Date:</strong> {{ execution_date }}</p>
+    <p><strong>Execution Time:</strong> {{ execution_time }}</p>
+    <h2>ASCII Strings</h2>
+    <pre>{{ ascii_strings }}</pre>
+    <h2>Unicode Strings</h2>
+    <pre>{{ unicode_strings }}</pre>
+    <h2>PE Info</h2>
+    <pre>{{ pe_info }}</pre>
+</body>
+</html>

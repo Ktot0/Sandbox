@@ -8,6 +8,7 @@ import threading
 import json
 from datetime import datetime
 from log import log
+import utils
 
 class Scheduler:
     def __init__(self, socketio):
@@ -33,7 +34,6 @@ class Scheduler:
 
     async def start_vm(self, label):
         
-
         async def wait_for_vm_startup(label):
             log(f'Starting VM {label}')
             await self.vbox.start_vm(label)
@@ -93,6 +93,7 @@ class Scheduler:
         os.mkdir(sample_report_path)
 
         agent_url = f'http://{await self.start_vm(label)}:5000'
+        #agent_url = "http://192.168.1.145:5000"
 
         # Check if the connection to the VM is established
         if not await self.check_connection(agent_url):
@@ -110,6 +111,8 @@ class Scheduler:
             log(f'Error uploading sample {sample_name}: {str(e)}')
             return {'error': f'Error uploading file: {str(e)}'}
         
+        await asyncio.sleep(10)
+
         import importlib
 
         # Execute the uploaded file with each module
@@ -117,7 +120,12 @@ class Scheduler:
             await self.exe_modules(module, sample_report_path, agent_url, sample_name)
           
         await self.vbox.dump_memory(label)
-        await asyncio.sleep(10)
+        #await asyncio.sleep(10)
+        await utils.stop_procmon(agent_url)
+        await utils.convert_procmon_log(agent_url)
+        #await asyncio.sleep(10)
+        await utils.get_procmon_log(agent_url)
+        #await asyncio.sleep(10)
         await self.vbox.stop_vm(label)
 
         await asyncio.sleep(5)
@@ -130,6 +138,7 @@ class Scheduler:
 
         #Remove Dump
         os.remove('memdump/postexec')
+        os.remove('memdump/procmonlog.xml')
         os.remove(f'uploads/{sample_name}')
 
         log('Execution completed successfully')

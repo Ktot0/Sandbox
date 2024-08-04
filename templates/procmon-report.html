@@ -1,0 +1,120 @@
+<!-- Filter Buttons -->
+<div class="filter-buttons">
+    <button onclick="filterTable('registry')">Registry</button>
+    <button onclick="filterTable('file')">File</button>
+    <button onclick="filterTable('network')">Network</button>
+    <button onclick="filterTable('others')">Others</button>
+    <button onclick="filterTable('')">Show All</button> <!-- To show all rows -->
+</div>
+
+<!-- Table and No Results Display -->
+<div class="scrollable-table">
+    <table id="myTable">
+        <thead>
+            <tr class="header">
+                <th>Process Name</th>
+                <th>PID</th>
+                <th>Operation</th>
+                <th>Path</th>
+                <th>Type</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in json_content %}
+            <tr>
+                <td>{{ item['Process_Name'] }}</td>
+                <td>{{ item['PID'] }}</td>
+                <td>{{ item['Operation'] }}</td>
+                <td>{{ item['Path'] if item['Path'] is not none else 'N/A' }}</td>
+                <td>{{ item['Type'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div id="noResults" class="no-results" style="display: none;">
+    No results found
+</div>
+
+<!-- JavaScript for Filtering -->
+<script>
+    function filterTable(type) {
+        const table = document.getElementById("myTable");
+        const tr = table.getElementsByTagName("tr");
+        let hasResults = false;
+
+        for (let i = 1; i < tr.length; i++) {
+            const td = tr[i].getElementsByTagName("td");
+            const typeCell = td[4];
+            const typeValue = typeCell ? typeCell.textContent || typeCell.innerText : '';
+
+            if (type === '' || typeValue.toLowerCase() === type.toLowerCase()) {
+                tr[i].style.display = "";
+                hasResults = true;
+            } else {
+                tr[i].style.display = "none";
+            }
+        }
+
+        document.getElementById("noResults").style.display = hasResults ? "none" : "block";
+    }
+</script>
+
+<!-- CSS for Buttons and Table -->
+<style>
+    .filter-buttons {
+        margin-bottom: 20px;
+    }
+
+    .filter-buttons button {
+        background-color: #007bff; /* Green background */
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 0 5px;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+
+    .filter-buttons button:hover {
+        background-color: #0565ca; /* Darker green on hover */
+    }
+
+    .scrollable-table {
+        max-height: 700px;
+        overflow-y: auto;
+        border: 1px solid #000000;
+        margin-top: 20px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        text-align: left;
+        padding: 8px;
+    }
+
+    tr:nth-child(even) {
+        background-color: #ffffff;
+    }
+
+    th {
+        background-color: #4CAF50;
+        color: rgb(0, 0, 0);
+    }
+
+    .no-results {
+        text-align: center;
+        color: red;
+        margin-top: 20px;
+        font-size: 18px;
+    }
+</style>
