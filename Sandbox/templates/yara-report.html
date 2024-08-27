@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Yara Report</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        h1 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Yara Report</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>File</th>
+                <th>Matched Rules</th>
+                <th>Error</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for result in json_content %}
+            <tr>
+                <td>{{ result['file'] }}</td>
+                <td>
+                    {% if result['matches'] %}
+                        <ul>
+                        {% for match in result['matches'] %}
+                            <li>{{ match['rule'] }}</li>
+                        {% endfor %}
+                        </ul>
+                    {% else %}
+                        None
+                    {% endif %}
+                </td>
+                <td>
+                    {% if 'error' in result %}
+                        {{ result['error'] }}
+                    {% else %}
+                        None
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

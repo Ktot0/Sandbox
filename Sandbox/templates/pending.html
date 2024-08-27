@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Pending Requests{% endblock %}
+
+{% block content %}
+<h1>Pending Requests</h1>
+<div id="status-container"></div>
+
+<script>
+    function updateStatus() {
+        fetch("{{ url_for('get_status') }}")
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('status-container');
+                container.innerHTML = '';
+                data.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'status-item';
+                    div.innerHTML = `File: ${item.file} - Date: ${item.date} - Time: ${item.time} - Status: ${item.status}`;
+                    
+                    if (item.status === 'Completed') {
+                        const reportLink = document.createElement('a');
+                        reportLink.href = `/reports/${item.file}-${item.date}-${item.time}`;
+                        reportLink.textContent = 'Inspect';
+                        reportLink.className = 'inspect-btn';
+                        div.appendChild(reportLink);
+                        div.className += ' status-item-with-button';
+                    }
+
+                    container.appendChild(div);
+                });
+            });
+    }
+
+    setInterval(updateStatus, 3000);
+    updateStatus();
+</script>
+{% endblock %}

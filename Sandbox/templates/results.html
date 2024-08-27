@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}Results{% endblock %}
+
+{% block content %}
+<h1>Results</h1>
+<div id="results-container"></div>
+
+<script>
+    function updateResults() {
+        fetch("{{ url_for('report_status') }}")
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('results-container');
+                container.innerHTML = '';
+                data.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'result-item';
+                    div.innerHTML = `
+                        <div>File: ${item.file}</div>
+                        <div>Date: ${item.date}</div>
+                        <div>Time: ${item.time}</div>
+                        <div>Status: ${item.status}</div>
+                        ${item.status === 'Completed' ? `<button onclick="inspectReport('${item.path}')">Inspect</button>` : ''}
+                    `;
+                    container.appendChild(div);
+                });
+            });
+    }
+
+    function inspectReport(filePath) {
+        const reportName = filePath.split('/').pop();
+        window.location.href = `/reports/${reportName}`;
+    }
+
+    setInterval(updateResults, 5000);
+    updateResults();
+</script>
+{% endblock %}

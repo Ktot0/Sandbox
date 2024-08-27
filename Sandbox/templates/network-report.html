@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Network Report</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        h1 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Network Report</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Type</th>
+                <th>Source IP</th>
+                <th>Destination IP</th>
+                <th>Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for result_type, entries in json_content.items() %}
+                {% for entry in entries %}
+                <tr>
+                    <td>{{ result_type.replace('_', ' ').title() }}</td>
+                    <td>{{ entry['source_ip'] }}</td>
+                    <td>{{ entry['destination_ip'] }}</td>
+                    <td>
+                        {% if result_type == 'dns_queries' %}
+                            Requested Domain: {{ entry['requested_domain'] }}
+                        {% elif result_type == 'http_requests' %}
+                            Content: {{ entry['content'] }}
+                        {% elif result_type == 'https_requests' %}
+                            HTTPS Request
+                        {% elif result_type == 'icmp_requests' %}
+                            ICMP Type: {{ entry['type'] }}, Code: {{ entry['code'] }}
+                        {% elif result_type == 'syn_packets' %}
+                            Source Port: {{ entry['source_port'] }}, Destination Port: {{ entry['destination_port'] }}
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
